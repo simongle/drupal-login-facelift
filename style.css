@@ -1,3 +1,5 @@
+/* These are styles referencing the default drupal ID's/ Classes of the input fields */
+
 #user-register-form  input:placeholder,
 #user-login input:placeholder,
 #user-register-form div.form-type-password input:placeholder,
