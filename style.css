@@ -1,0 +1,26 @@
+#user-register-form  input:placeholder,
+#user-login input:placeholder,
+#user-register-form div.form-type-password input:placeholder,
+#user-login div.form-type-password input:placeholder {
+  padding-left: 4%;
+}
+
+#user-register-form label,
+#user-login label,
+#user-register-form div.form-type-password label,
+#user-login div.form-type-password label,
+.tabs--primary.nav.nav-tabs {
+  display: none;
+}
+
+#user-register-form button, #user-login button {
+  width: 40%;
+  margin-left: 30%;
+  height: 40px;
+}
+
+#user-login .forgot-password {
+  display: inherit;
+  text-align: center;
+  margin-top: 1%;
+}

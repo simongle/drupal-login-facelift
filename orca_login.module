@@ -1,0 +1,114 @@
+<?php
+
+/**
+ * @file
+ * A module to theme the default regsitration and login forms
+ */
+
+ /**
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+function orca_login_help($path, $arg) {
+  switch ($path) {
+    case "admin/help#orca_login":
+      return '<p>' . t("Provides custom skin for registration and login forms") . '</p>';
+      break;
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function orca_login_form_alter(&$form, &$form_state, $form_id) {
+
+  // Check if this is the correct form to alter
+  if($form_id == 'user_login' || $form_id == 'user_login_block' || $form_id == 'user_register_form') {
+    $form['account']['mail']['#description'] = '';
+    $form['account']['mail']['#attributes'] = array(
+      'placeholder' => t('EMAIL ADDRESS'));
+
+    $form['pass']['#attributes'] = array('placeholder' => t('PASSWORD'));
+    $form['name']['#attributes'] = array('placeholder' => t('USERNAME'));
+
+  }
+  if($form_id == 'user_register_form') {
+    $form['custom_title'] = array(
+      '#prefix' => '<h2 style="text-align:center;margin-bottom:3%">tell us more about you!</h2>',
+      '#weight' => -80
+      );
+  }
+  if($form_id == 'user_login') {
+    $form['actions']['link'] = array(
+      '#markup' => l(t('Forgot your password?'), 'user/password', array('attributes' => array('class' => array('forgot-password')))),
+      '#weight' => 100
+    );
+    $form['custom_title'] = array(
+      '#prefix' => '<h2 style="text-align:center;margin-bottom:3%">Log in</h2>',
+      '#weight' => -80
+      );
+
+  }
+
+}
+
+/**
+* Implementation of hook_element_info_alter ()
+*/
+function orca_login_element_info_alter (& $type)
+{
+  if (isset($type['password_confirm']['#process'])) {
+    $func = '_orca_login_process_password_confirm';
+
+    $type['password_confirm']['#process'][] = $func;
+  }
+
+  return $type;
+}
+
+/**
+ * Do a bit of processing for the password_confirm element.
+ * Original processing happens in expand_password_confirm()
+ */
+function _orca_login_process_password_confirm ($element)
+{
+  $element['pass1']['#attributes']['placeholder'] = t('PASSWORD');
+  $element['pass2']['#attributes']['placeholder'] = t('CONFIRM PASSWORD');
+
+  return $element;
+}
+
+/**
+ * A very hacky way to insert placeholders for the Name and Organization fields
+ * on the user registration pages for nonprofit and corporate.
+ *
+ * Resorted to this after failing to figure out how to use the hooks that
+ * are provided, e.g. hook_form_profile2_form_alter().
+ *
+ * N.B. This function will break if the values for the html id attributes
+ * should ever change.
+ */
+function orca_login_insert_placeholders($rendered_html) {
+
+  // First, the registration page for nonprofits.
+  $id = 'id="edit-profile-nonprofit-field-name-und-0-value"';
+  $rendered_html = str_replace($id, $id . ' placeholder="NAME"', $rendered_html);
+
+  $id = 'id="edit-profile-nonprofit-field-organization-und-0-value"';
+  $rendered_html = str_replace($id, $id . ' placeholder="ORGANIZATION"', $rendered_html);
+
+  // Next, the registration page for corporate.
+  $id = 'id="edit-profile-corporate-field-name-und-0-value"';
+  $rendered_html = str_replace($id, $id . ' placeholder="NAME"', $rendered_html);
+
+  $id = 'id="edit-profile-corporate-field-organization-und-0-value"';
+  $rendered_html = str_replace($id, $id . ' placeholder="ORGANIZATION"', $rendered_html);
+
+  return $rendered_html;
+}

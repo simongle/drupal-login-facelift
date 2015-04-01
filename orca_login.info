@@ -1,0 +1,3 @@
+name = Orca Login
+description = The place to customize the registration and login form
+core = 7.x
